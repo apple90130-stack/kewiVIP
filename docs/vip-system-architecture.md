@@ -226,3 +226,22 @@ npm start
 - `POST /api/admin/courses`：後台建立課程
 - `PATCH /api/admin/tasks`：後台審核任務
 - `POST /api/admin/announcements`：後台發布公告
+
+### Vercel 部署（公開網址）
+
+本專案已加入 `vercel.json` 與 `api/index.js`，可直接部署至 Vercel：
+
+```bash
+# 需先在你的電腦安裝並登入 Vercel CLI
+npm i -g vercel
+vercel login
+vercel --prod
+```
+
+部署成功後，Vercel 會回傳公開網址（例如 `https://xxx.vercel.app`）。
+
+- `/` 會導到會員首頁 `web/index.html`
+- `/web/admin.html` 可進後台
+- `/api/*` 會由 `api/index.js` 提供
+
+> 注意：Vercel Serverless 為無狀態執行環境；目前 `api/index.js` 的資料採記憶體保存，重啟實例可能重置。正式版建議改接資料庫（Supabase / Neon / PlanetScale）。
