@@ -1,0 +1,32 @@
+:root {
+  --bg: #f5f7fb;
+  --card: #fff;
+  --text: #1f2937;
+  --primary: #7c3aed;
+  --border: #e5e7eb;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, sans-serif; background: var(--bg); color: var(--text); }
+.topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 24px; background: white; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0;
+}
+.topbar nav a { margin-left: 12px; text-decoration: none; color: #4b5563; }
+.topbar nav a.active { color: var(--primary); font-weight: bold; }
+.container { max-width: 1080px; margin: 20px auto; padding: 0 16px; display: grid; gap: 16px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.list { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 8px; }
+.list li { padding: 10px; background: #fafafa; border: 1px solid var(--border); border-radius: 8px; }
+.progress-wrap { width: 100%; background: #e5e7eb; border-radius: 999px; overflow: hidden; height: 12px; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, #7c3aed, #a78bfa); width: 0%; }
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.stat-grid div { background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 8px; padding: 10px; text-align: center; }
+.stat-grid strong { display: block; font-size: 20px; }
+.inline-form { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.inline-form input, .inline-form select, .inline-form button {
+  padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
+}
+.inline-form button { background: var(--primary); color: white; border: none; cursor: pointer; }
+.badge { display:inline-block; padding:2px 8px; border-radius:999px; background:#ede9fe; color:#5b21b6; font-size:12px; margin-left:6px; }
+.small { font-size: 12px; color: #6b7280; }

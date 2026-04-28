@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIP 會員介面 Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>個人 VIP 中心</h1>
+    <nav>
+      <a href="index.html" class="active">會員端</a>
+      <a href="admin.html">後台端</a>
+    </nav>
+  </header>
+
+  <main class="container" id="member-app">
+    <section class="card">
+      <h2>VIP 進度</h2>
+      <p id="vip-summary"></p>
+      <div class="progress-wrap"><div id="vip-progress" class="progress-bar"></div></div>
+      <div class="stat-grid">
+        <div><strong id="group-count">0</strong><span>跟團次數</span></div>
+        <div><strong id="total-amount">0</strong><span>累積消費</span></div>
+        <div><strong id="晒单-count">0</strong><span>曬單次數</span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>會員專屬活動</h2>
+      <ul id="member-activities" class="list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>近期線上課程</h2>
+      <ul id="courses" class="list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>近期開團行事曆（全會員相同）</h2>
+      <ul id="calendar" class="list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>打卡活動（僅顯示已購買商品）</h2>
+      <ul id="checkins" class="list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>會員任務上傳</h2>
+      <p>上傳訂單截圖或社群貼文截圖，送審後發放積分。</p>
+      <form id="task-form" class="inline-form">
+        <input type="text" id="task-title" placeholder="任務名稱（例：益生菌曬單）" required />
+        <input type="url" id="task-url" placeholder="圖片網址（可先貼雲端連結）" required />
+        <button type="submit">送出審核</button>
+      </form>
+      <ul id="task-submissions" class="list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>公告區</h2>
+      <ul id="announcements" class="list"></ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -189,3 +189,28 @@
 - 任務照片含個資，需設定保存期限、遮罩與權限控管。
 - 標籤濫用會導致投放失準，需建立命名與生命週期規範。
 
+
+---
+
+## 11. 可直接使用的介面 Prototype（本 repo）
+
+本規劃已附上可執行的前後台 Demo 介面：
+
+- 會員端：`web/index.html`
+- 後台端：`web/admin.html`
+- 樣式：`web/styles.css`
+- 互動邏輯（報名、上傳任務、審核、標籤與公告管理）：`web/app.js`
+
+### 啟動方式
+
+```bash
+cd /workspace/kewiVIP
+python3 -m http.server 8080
+```
+
+開啟：
+
+- `http://localhost:8080/web/index.html`
+- `http://localhost:8080/web/admin.html`
+
+> 此 Demo 使用前端 mock 資料，目的是先讓你看到「可實際操作」的介面流程；下一步可將 `app.js` 的資料操作替換為真實 API。
