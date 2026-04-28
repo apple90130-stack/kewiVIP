@@ -205,12 +205,24 @@
 
 ```bash
 cd /workspace/kewiVIP
-python3 -m http.server 8080
+npm start
 ```
 
 開啟：
 
-- `http://localhost:8080/web/index.html`
-- `http://localhost:8080/web/admin.html`
+- `http://127.0.0.1:8080/web/index.html`
+- `http://127.0.0.1:8080/web/admin.html`
 
-> 此 Demo 使用前端 mock 資料，目的是先讓你看到「可實際操作」的介面流程；下一步可將 `app.js` 的資料操作替換為真實 API。
+> 此版本已接上後端 API，資料會透過 `server.js` 讀寫 `data/db.json`。
+
+
+### API 端點（已接真 API）
+
+- `GET /api/member/dashboard`：會員首頁資料
+- `POST /api/member/enroll`：會員報名課程
+- `POST /api/member/tasks`：會員提交任務
+- `GET /api/admin/overview`：後台總覽資料
+- `POST /api/admin/tags`：後台新增會員標籤
+- `POST /api/admin/courses`：後台建立課程
+- `PATCH /api/admin/tasks`：後台審核任務
+- `POST /api/admin/announcements`：後台發布公告
