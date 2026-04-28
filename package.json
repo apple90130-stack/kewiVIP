@@ -1,0 +1,10 @@
+{
+  "name": "kewivip",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VIP system prototype with real API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

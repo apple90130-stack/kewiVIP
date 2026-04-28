@@ -1,0 +1,57 @@
+ <!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIP 後台 Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>VIP 管理後台</h1>
+    <nav>
+      <a href="index.html">會員端</a>
+      <a href="admin.html" class="active">後台端</a>
+    </nav>
+  </header>
+
+  <main class="container" id="admin-app">
+    <section class="card">
+      <h2>會員管理與標籤</h2>
+      <form id="tag-form" class="inline-form">
+        <select id="member-select"></select>
+        <input id="tag-input" type="text" placeholder="新增標籤（例：益生菌）" required />
+        <button type="submit">新增標籤</button>
+      </form>
+      <ul id="member-tags" class="list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>課程管理</h2>
+      <form id="course-form" class="inline-form">
+        <input id="course-title" type="text" placeholder="課程名稱" required />
+        <input id="course-time" type="datetime-local" required />
+        <input id="course-tag" type="text" placeholder="投放標籤" required />
+        <button type="submit">建立課程</button>
+      </form>
+      <ul id="admin-courses" class="list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>任務審核</h2>
+      <ul id="task-review" class="list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>公告管理</h2>
+      <form id="notice-form" class="inline-form">
+        <input id="notice-text" type="text" placeholder="輸入公告內容" required />
+        <button type="submit">發布公告</button>
+      </form>
+      <ul id="admin-notices" class="list"></ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
