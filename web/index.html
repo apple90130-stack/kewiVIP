@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIP 會員介面</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>個人 VIP 中心（會員端）</h1>
+    <button id="member-logout" class="ghost" style="display:none">登出</button>
+  </header>
+
+  <main class="container">
+    <section id="member-login-card" class="card auth-card">
+      <h2>會員登入</h2>
+      <p class="small">請輸入姓名與手機號碼後進入會員畫面。</p>
+      <form id="member-login-form" class="inline-form">
+        <input id="member-name" type="text" placeholder="姓名" required />
+        <input id="member-phone" type="tel" placeholder="手機號碼（09 開頭）" required />
+        <button type="submit">登入會員</button>
+      </form>
+      <p id="member-login-error" class="error"></p>
+    </section>
+
+    <div id="member-app" style="display:none">
+      <section class="card">
+        <h2>VIP 進度</h2>
+        <p id="vip-summary"></p>
+        <div class="progress-wrap"><div id="vip-progress" class="progress-bar"></div></div>
+        <div class="stat-grid">
+          <div><strong id="group-count">0</strong><span>跟團次數</span></div>
+          <div><strong id="total-amount">0</strong><span>累積消費</span></div>
+          <div><strong id="share-count">0</strong><span>曬單次數</span></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>會員專屬活動</h2>
+        <ul id="member-activities" class="list"></ul>
+      </section>
+
+      <section class="card">
+        <h2>近期線上課程</h2>
+        <ul id="courses" class="list"></ul>
+      </section>
+
+      <section class="card">
+        <h2>近期開團行事曆（全會員相同）</h2>
+        <ul id="calendar" class="list"></ul>
+      </section>
+
+      <section class="card">
+        <h2>打卡活動（僅顯示已購買商品）</h2>
+        <ul id="checkins" class="list"></ul>
+      </section>
+
+      <section class="card">
+        <h2>會員任務上傳</h2>
+        <p>上傳訂單截圖或社群貼文截圖，送審後發放積分。</p>
+        <form id="task-form" class="inline-form">
+          <input type="text" id="task-title" placeholder="任務名稱（例：益生菌曬單）" required />
+          <input type="url" id="task-url" placeholder="圖片網址（可先貼雲端連結）" required />
+          <button type="submit">送出審核</button>
+        </form>
+        <ul id="task-submissions" class="list"></ul>
+      </section>
+
+      <section class="card">
+        <h2>公告區</h2>
+        <ul id="announcements" class="list"></ul>
+      </section>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
