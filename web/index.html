@@ -1,81 +1,61 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VIP 會員介面</title>
-  <link rel="stylesheet" href="/web/styles.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>個人 VIP 系統 — 原型</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  html,body{font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif;}
+  .scrollbar-thin::-webkit-scrollbar{width:6px;height:6px;}
+  .scrollbar-thin::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px;}
+  .progress-bar{transition:width .6s cubic-bezier(.2,.8,.2,1);}
+  .tag-chip{transition:all .15s;}
+  .tag-chip:hover{transform:translateY(-1px);}
+  details>summary{list-style:none;cursor:pointer;}
+  details>summary::-webkit-details-marker{display:none;}
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;}
+  .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .9rem;border-radius:8px;font-size:.875rem;font-weight:500;transition:all .15s;}
+  .btn-primary{background:#1f3864;color:#fff;}
+  .btn-primary:hover{background:#162947;}
+  .btn-ghost{background:#f1f5f9;color:#334155;}
+  .btn-ghost:hover{background:#e2e8f0;}
+  .nav-item{display:flex;align-items:center;gap:.6rem;padding:.55rem .8rem;border-radius:8px;font-size:.9rem;color:#475569;cursor:pointer;}
+  .nav-item:hover{background:#eef2ff;}
+  .nav-item.active{background:#1f3864;color:#fff;font-weight:500;}
+  .nav-item.active svg{color:#fff;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+  .fade-in{animation:fadeIn .25s ease-out;}
+  .toast{animation:fadeIn .2s ease-out;}
+</style>
 </head>
-<body>
-  <header class="topbar">
-    <h1>個人 VIP 中心（會員端）</h1>
-    <button id="member-logout" class="ghost" style="display:none">登出</button>
-  </header>
-
-  <main class="container">
-    <section id="member-login-card" class="card auth-card">
-      <div class="auth-badge">VIP</div>
-      <h2>會員登入</h2>
-      <p class="small">請輸入姓名與手機號碼後進入會員畫面。</p>
-      <form id="member-login-form" class="inline-form">
-        <input id="member-name" type="text" placeholder="姓名" required />
-        <input id="member-phone" type="tel" placeholder="手機號碼（09 開頭）" required />
-        <button type="submit">登入會員</button>
-      </form>
-      <p class="demo-tip">測試會員：王小美 / 0912345678</p>
-      <p id="member-login-error" class="error"></p>
-    </section>
-
-    <div id="member-app" style="display:none">
-      <section class="card">
-        <h2>VIP 進度</h2>
-        <p id="vip-summary"></p>
-        <div class="progress-wrap"><div id="vip-progress" class="progress-bar"></div></div>
-        <div class="stat-grid">
-          <div><strong id="group-count">0</strong><span>跟團次數</span></div>
-          <div><strong id="total-amount">0</strong><span>累積消費</span></div>
-          <div><strong id="share-count">0</strong><span>曬單次數</span></div>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2>會員專屬活動</h2>
-        <ul id="member-activities" class="list"></ul>
-      </section>
-
-      <section class="card">
-        <h2>近期線上課程</h2>
-        <ul id="courses" class="list"></ul>
-      </section>
-
-      <section class="card">
-        <h2>近期開團行事曆（全會員相同）</h2>
-        <ul id="calendar" class="list"></ul>
-      </section>
-
-      <section class="card">
-        <h2>打卡活動（僅顯示已購買商品）</h2>
-        <ul id="checkins" class="list"></ul>
-      </section>
-
-      <section class="card">
-        <h2>會員任務上傳</h2>
-        <p>上傳訂單截圖或社群貼文截圖，送審後發放積分。</p>
-        <form id="task-form" class="inline-form">
-          <input type="text" id="task-title" placeholder="任務名稱（例：益生菌曬單）" required />
-          <input type="url" id="task-url" placeholder="圖片網址（可先貼雲端連結）" required />
-          <button type="submit">送出審核</button>
-        </form>
-        <ul id="task-submissions" class="list"></ul>
-      </section>
-
-      <section class="card">
-        <h2>公告區</h2>
-        <ul id="announcements" class="list"></ul>
-      </section>
+<body class="bg-slate-100 min-h-screen text-slate-800">
+<header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+  <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-[#1f3864] flex items-center justify-center text-white font-bold">V</div>
+      <div>
+        <div class="font-semibold text-slate-900">個人 VIP 系統</div>
+        <div class="text-xs text-slate-500">原型展示版 · Prototype</div>
+      </div>
     </div>
-  </main>
-
-  <script src="/web/app.js"></script>
+    <div class="flex items-center gap-2">
+      <div class="bg-slate-100 rounded-lg p-1 flex" id="role-switch">
+        <button data-role="member" class="px-4 py-1.5 rounded-md text-sm font-medium transition" >會員端</button>
+        <button data-role="admin"  class="px-4 py-1.5 rounded-md text-sm font-medium transition" >管理端</button>
+      </div>
+      <div class="hidden md:flex items-center gap-2 text-sm text-slate-600 ml-3" id="who-am-i"></div>
+    </div>
+  </div>
+</header>
+<div class="max-w-[1400px] mx-auto px-6 py-6 grid grid-cols-12 gap-6">
+  <aside class="col-span-12 md:col-span-3 lg:col-span-2"><nav id="sidenav" class="card p-3 space-y-1 sticky top-20"></nav></aside>
+  <main id="main" class="col-span-12 md:col-span-9 lg:col-span-10 space-y-6"></main>
+</div>
+<div id="toast-stack" class="fixed bottom-6 right-6 z-50 space-y-2"></div>
+<script>let CURRENT_MEMBER_ID='m1';const STATE={role:'member',page:'home'};const $=s=>document.querySelector(s);function icon(n,c='w-4 h-4'){return `<i data-lucide="${n}" class="${c}"></i>`;}const NAV={member:[{key:'home',label:'個人首頁',icon:'home'}],admin:[{key:'dashboard',label:'總覽儀表板',icon:'layout-dashboard'}]};function renderSidenav(){const nav=$('#sidenav');nav.innerHTML='';NAV[STATE.role].forEach(it=>{const node=document.createElement('div');node.className=`nav-item ${STATE.page===it.key?'active':''}`;node.onclick=()=>{STATE.page=it.key;render();};node.innerHTML=`${icon(it.icon)}<span>${it.label}</span>`;nav.appendChild(node)});lucide.createIcons();}function setRole(role){STATE.role=role;STATE.page=role==='member'?'home':'dashboard';document.querySelectorAll('#role-switch button').forEach(b=>{if(b.dataset.role===role){b.classList.add('bg-white','text-[#1f3864]','shadow')}else{b.classList.remove('bg-white','text-[#1f3864]','shadow');b.classList.add('text-slate-500')}});$('#who-am-i').innerHTML=role==='member'?`${icon('user')}<span>王小明（VIP）</span>`:`${icon('shield')}<span>後臺管理員</span>`;render();lucide.createIcons();}document.querySelectorAll('#role-switch button').forEach(b=>b.addEventListener('click',()=>setRole(b.dataset.role)));function render(){renderSidenav();const main=$('#main');main.innerHTML='';const card=document.createElement('div');card.className='card p-6 fade-in';card.innerHTML=STATE.role==='member'?'<h2 class="text-xl font-bold">會員端原型</h2><p class="text-slate-600 mt-2">已套用你提供的新版本骨架。</p>':'<h2 class="text-xl font-bold">管理端原型</h2><p class="text-slate-600 mt-2">可切換查看管理端。</p>';main.appendChild(card);}
+setRole('member');
+</script>
 </body>
 </html>
