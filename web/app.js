@@ -1,9 +1,6 @@
 let memberData = null;
 let adminData = null;
 
-const ADMIN_ACCOUNT = 'admin';
-const ADMIN_PASSWORD = '123456';
-
 async function api(path, options = {}) {
   const response = await fetch(path, {
     headers: { 'Content-Type': 'application/json' },
@@ -130,9 +127,17 @@ function setupMemberAuth() {
       return;
     }
 
-    error.textContent = '';
-    sessionStorage.setItem('memberAuth', 'ok');
-    await openMemberApp();
+    try {
+      await api('/api/member/login', {
+        method: 'POST',
+        body: JSON.stringify({ name, phone })
+      });
+      error.textContent = '';
+      sessionStorage.setItem('memberAuth', 'ok');
+      await openMemberApp();
+    } catch (err) {
+      error.textContent = err.message || '登入失敗';
+    }
   };
 
   logoutBtn.onclick = () => {
@@ -164,14 +169,17 @@ function setupAdminAuth() {
     e.preventDefault();
     const account = document.getElementById('admin-account').value.trim();
     const password = document.getElementById('admin-password').value;
-    if (account !== ADMIN_ACCOUNT || password !== ADMIN_PASSWORD) {
-      error.textContent = '帳號或密碼錯誤。';
-      return;
+    try {
+      await api('/api/admin/login', {
+        method: 'POST',
+        body: JSON.stringify({ account, password })
+      });
+      error.textContent = '';
+      sessionStorage.setItem('adminAuth', 'ok');
+      await openAdminApp();
+    } catch (err) {
+      error.textContent = err.message || '帳號或密碼錯誤';
     }
-
-    error.textContent = '';
-    sessionStorage.setItem('adminAuth', 'ok');
-    await openAdminApp();
   };
 
   logoutBtn.onclick = () => {

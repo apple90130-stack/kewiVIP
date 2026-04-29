@@ -35,3 +35,40 @@ body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(18
 .error { color: var(--danger); font-size: 13px; margin-top: 4px; min-height: 18px; }
 .auth-card { max-width: 560px; margin: 28px auto; }
 .ghost { background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+
+.auth-card {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at top right, #fff1ea 0%, #fffdfb 45%, #fffaf7 100%);
+  border: 1px solid #f0dcd0;
+}
+.auth-card::before {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(217,165,179,0.35), rgba(216,183,154,0.22));
+}
+.auth-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: #fff;
+  font-size: 12px;
+  margin-bottom: 8px;
+  position: relative;
+}
+.demo-tip {
+  font-size: 12px;
+  color: #7d5d4c;
+  background: #fff2e8;
+  border: 1px dashed #e5c9b6;
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin: 6px 0;
+  position: relative;
+}

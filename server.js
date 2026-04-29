@@ -6,6 +6,8 @@ const { URL } = require('url');
 const PORT = process.env.PORT || 8080;
 const DB_PATH = path.join(__dirname, 'data', 'db.json');
 const { normalizeText, isValidUrl, toInt, newId } = require('./lib/validators');
+const ADMIN_ACCOUNT = process.env.ADMIN_ACCOUNT || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '123456';
 
 function readDb() {
   return JSON.parse(fs.readFileSync(DB_PATH, 'utf-8'));
@@ -95,6 +97,26 @@ const server = http.createServer(async (req, res) => {
 
       if (req.method === 'GET' && pathname === '/api/member/dashboard') {
         return sendJson(res, 200, getMemberDashboard(db));
+      }
+
+
+      if (req.method === 'POST' && pathname === '/api/member/login') {
+        const body = await parseBody(req);
+        const name = normalizeText(body.name, 50);
+        const phone = normalizeText(body.phone, 20);
+        const ok = name === db.member.name && phone === db.member.phone;
+        if (!ok) return sendJson(res, 401, { error: '姓名或手機不正確' });
+        return sendJson(res, 200, { ok: true, member: { name: db.member.name, phone: db.member.phone } });
+      }
+
+      if (req.method === 'POST' && pathname === '/api/admin/login') {
+        const body = await parseBody(req);
+        const account = normalizeText(body.account, 50);
+        const password = normalizeText(body.password, 50);
+        if (account !== ADMIN_ACCOUNT || password !== ADMIN_PASSWORD) {
+          return sendJson(res, 401, { error: '帳號或密碼錯誤' });
+        }
+        return sendJson(res, 200, { ok: true });
       }
 
       if (req.method === 'POST' && pathname === '/api/member/enroll') {

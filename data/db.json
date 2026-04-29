@@ -12,7 +12,8 @@
     "purchases": [
       "益生菌",
       "鱸魚精"
-    ]
+    ],
+    "phone": "0912345678"
   },
   "rules": {
     "amountTarget": 30000,

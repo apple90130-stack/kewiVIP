@@ -4,6 +4,7 @@ const seed = {
   member: {
     id: 1,
     name: '王小美',
+    phone: '0912345678',
     totalAmount: 24600,
     shareCount: 7,
     groupCount: 5,
@@ -35,6 +36,8 @@ const seed = {
 
 const db = globalThis.__vip_db || structuredClone(seed);
 globalThis.__vip_db = db;
+const ADMIN_ACCOUNT = process.env.ADMIN_ACCOUNT || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '123456';
 
 function json(res, code, data) {
   res.status(code).json(data);
@@ -59,6 +62,23 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'GET' && path === '/health') return json(res, 200, { ok: true, now: new Date().toISOString() });
   if (req.method === 'GET' && path === '/member/dashboard') return json(res, 200, dashboard());
+
+  if (req.method === 'POST' && path === '/member/login') {
+    const name = normalizeText((req.body || {}).name, 50);
+    const phone = normalizeText((req.body || {}).phone, 20);
+    const ok = name === db.member.name && phone === db.member.phone;
+    if (!ok) return json(res, 401, { error: '姓名或手機不正確' });
+    return json(res, 200, { ok: true, member: { name: db.member.name, phone: db.member.phone } });
+  }
+
+  if (req.method === 'POST' && path === '/admin/login') {
+    const account = normalizeText((req.body || {}).account, 50);
+    const password = normalizeText((req.body || {}).password, 50);
+    if (account !== ADMIN_ACCOUNT || password !== ADMIN_PASSWORD) {
+      return json(res, 401, { error: '帳號或密碼錯誤' });
+    }
+    return json(res, 200, { ok: true });
+  }
 
   if (req.method === 'POST' && path === '/member/enroll') {
     const { courseId } = req.body || {};
