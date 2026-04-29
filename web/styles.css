@@ -72,3 +72,27 @@ body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(18
   margin: 6px 0;
   position: relative;
 }
+
+
+h1, h2 { letter-spacing: 0.5px; }
+.topbar h1 { font-size: 42px; margin: 8px 0; font-weight: 800; }
+.card h2 { margin-top: 0; color: #7b5563; }
+.inline-form input {
+  background: #fff;
+  min-width: 180px;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.inline-form input:focus, .inline-form select:focus {
+  outline: none;
+  border-color: #d5a0af;
+  box-shadow: 0 0 0 3px rgba(213,160,175,.18);
+}
+.inline-form button {
+  font-weight: 700;
+  box-shadow: 0 6px 12px rgba(198,139,155,.2);
+}
+#member-app, #admin-app { display: grid; gap: 16px; }
+@media (max-width: 680px) {
+  .topbar h1 { font-size: 28px; }
+  .inline-form input, .inline-form button { width: 100%; }
+}
