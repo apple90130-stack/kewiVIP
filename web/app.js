@@ -1,6 +1,9 @@
 let memberData = null;
 let adminData = null;
 
+const ADMIN_ACCOUNT = 'admin';
+const ADMIN_PASSWORD = '123456';
+
 async function api(path, options = {}) {
   const response = await fetch(path, {
     headers: { 'Content-Type': 'application/json' },
@@ -99,6 +102,86 @@ async function reviewTask(id, status) {
 }
 window.reviewTask = reviewTask;
 
+function setupMemberAuth() {
+  const loginCard = document.getElementById('member-login-card');
+  const app = document.getElementById('member-app');
+  const form = document.getElementById('member-login-form');
+  const error = document.getElementById('member-login-error');
+  const logoutBtn = document.getElementById('member-logout');
+  if (!loginCard || !app || !form || !error || !logoutBtn) return;
+
+  const openMemberApp = async () => {
+    loginCard.style.display = 'none';
+    app.style.display = 'grid';
+    logoutBtn.style.display = 'inline-block';
+    await refreshAll();
+  };
+
+  if (sessionStorage.getItem('memberAuth') === 'ok') openMemberApp();
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('member-name').value.trim();
+    const phone = document.getElementById('member-phone').value.trim();
+    const phoneOk = /^09\d{8}$/.test(phone);
+
+    if (!name || !phoneOk) {
+      error.textContent = '請輸入正確姓名與手機號碼（09 開頭，共 10 碼）。';
+      return;
+    }
+
+    error.textContent = '';
+    sessionStorage.setItem('memberAuth', 'ok');
+    await openMemberApp();
+  };
+
+  logoutBtn.onclick = () => {
+    sessionStorage.removeItem('memberAuth');
+    app.style.display = 'none';
+    loginCard.style.display = 'block';
+    logoutBtn.style.display = 'none';
+  };
+}
+
+function setupAdminAuth() {
+  const loginCard = document.getElementById('admin-login-card');
+  const app = document.getElementById('admin-app');
+  const form = document.getElementById('admin-login-form');
+  const error = document.getElementById('admin-login-error');
+  const logoutBtn = document.getElementById('admin-logout');
+  if (!loginCard || !app || !form || !error || !logoutBtn) return;
+
+  const openAdminApp = async () => {
+    loginCard.style.display = 'none';
+    app.style.display = 'grid';
+    logoutBtn.style.display = 'inline-block';
+    await refreshAll();
+  };
+
+  if (sessionStorage.getItem('adminAuth') === 'ok') openAdminApp();
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const account = document.getElementById('admin-account').value.trim();
+    const password = document.getElementById('admin-password').value;
+    if (account !== ADMIN_ACCOUNT || password !== ADMIN_PASSWORD) {
+      error.textContent = '帳號或密碼錯誤。';
+      return;
+    }
+
+    error.textContent = '';
+    sessionStorage.setItem('adminAuth', 'ok');
+    await openAdminApp();
+  };
+
+  logoutBtn.onclick = () => {
+    sessionStorage.removeItem('adminAuth');
+    app.style.display = 'none';
+    loginCard.style.display = 'block';
+    logoutBtn.style.display = 'none';
+  };
+}
+
 function bindForms() {
   const taskForm = document.getElementById('task-form');
   if (taskForm) {
@@ -164,8 +247,8 @@ function bindForms() {
 
 async function refreshAll() {
   const jobs = [];
-  if (document.getElementById('member-app')) jobs.push(loadMember());
-  if (document.getElementById('admin-app')) jobs.push(loadAdmin());
+  if (document.getElementById('member-app') && sessionStorage.getItem('memberAuth') === 'ok') jobs.push(loadMember());
+  if (document.getElementById('admin-app') && sessionStorage.getItem('adminAuth') === 'ok') jobs.push(loadAdmin());
   await Promise.all(jobs);
   renderMember();
   renderAdmin();
@@ -174,7 +257,8 @@ async function refreshAll() {
 (async function init() {
   try {
     bindForms();
-    await refreshAll();
+    setupMemberAuth();
+    setupAdminAuth();
   } catch (error) {
     alert(`載入失敗：${error.message}`);
   }

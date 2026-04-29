@@ -1,3 +1,5 @@
+const { normalizeText, isValidUrl, toInt, newId } = require('../lib/validators');
+
 const seed = {
   member: {
     id: 1,
@@ -60,16 +62,19 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'POST' && path === '/member/enroll') {
     const { courseId } = req.body || {};
-    const course = db.courses.find((c) => c.id === Number(courseId));
+    const parsedId = toInt(courseId);
+    const course = db.courses.find((c) => c.id === parsedId);
     if (!course) return json(res, 404, { error: 'Course not found' });
     course.enrolled = true;
     return json(res, 200, { ok: true, course });
   }
 
   if (req.method === 'POST' && path === '/member/tasks') {
-    const { title, url } = req.body || {};
+    const title = normalizeText((req.body || {}).title, 80);
+    const url = normalizeText((req.body || {}).url, 500);
     if (!title || !url) return json(res, 400, { error: 'title and url required' });
-    const task = { id: Date.now(), title, url, status: 'pending' };
+    if (!isValidUrl(url)) return json(res, 422, { error: 'url must be http/https' });
+    const task = { id: newId(), title, url, status: 'pending' };
     db.tasks.unshift(task);
     return json(res, 201, task);
   }
@@ -79,9 +84,9 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === 'POST' && path === '/admin/tags') {
-    const { memberId, tag } = req.body || {};
-    const member = db.members.find((m) => m.id === Number(memberId));
-    const safeTag = String(tag || '').trim();
+    const memberId = toInt((req.body || {}).memberId);
+    const member = db.members.find((m) => m.id === memberId);
+    const safeTag = normalizeText((req.body || {}).tag, 30);
     if (!member || !safeTag) return json(res, 400, { error: 'invalid memberId or tag' });
     if (!member.tags.includes(safeTag)) member.tags.push(safeTag);
     if (member.id === db.member.id && !db.member.tags.includes(safeTag)) db.member.tags.push(safeTag);
@@ -89,16 +94,19 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === 'POST' && path === '/admin/courses') {
-    const { title, time, tag } = req.body || {};
+    const title = normalizeText((req.body || {}).title, 80);
+    const time = normalizeText((req.body || {}).time, 40);
+    const tag = normalizeText((req.body || {}).tag, 30);
     if (!title || !time || !tag) return json(res, 400, { error: 'title, time, tag required' });
-    const course = { id: Date.now(), title: String(title), time: String(time), tag: String(tag), enrolled: false };
+    const course = { id: newId(), title, time, tag, enrolled: false };
     db.courses.unshift(course);
     return json(res, 201, course);
   }
 
   if (req.method === 'PATCH' && path === '/admin/tasks') {
-    const { id, status } = req.body || {};
-    const task = db.tasks.find((t) => t.id === Number(id));
+    const taskId = toInt((req.body || {}).id);
+    const status = normalizeText((req.body || {}).status, 20);
+    const task = db.tasks.find((t) => t.id === taskId);
     if (!task) return json(res, 404, { error: 'Task not found' });
     if (!['approved', 'rejected'].includes(status)) return json(res, 400, { error: 'Invalid status' });
     task.status = status;
@@ -106,8 +114,7 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === 'POST' && path === '/admin/announcements') {
-    const { text } = req.body || {};
-    const value = String(text || '').trim();
+    const value = normalizeText((req.body || {}).text, 200);
     if (!value) return json(res, 400, { error: 'text required' });
     db.announcements.unshift(value);
     return json(res, 201, { ok: true, text: value });

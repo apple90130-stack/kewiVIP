@@ -5,14 +5,16 @@ const { URL } = require('url');
 
 const PORT = process.env.PORT || 8080;
 const DB_PATH = path.join(__dirname, 'data', 'db.json');
-const WEB_ROOT = path.join(__dirname, 'web');
+const { normalizeText, isValidUrl, toInt, newId } = require('./lib/validators');
 
 function readDb() {
   return JSON.parse(fs.readFileSync(DB_PATH, 'utf-8'));
 }
 
 function writeDb(db) {
-  fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2), 'utf-8');
+  const tmpPath = `${DB_PATH}.tmp`;
+  fs.writeFileSync(tmpPath, JSON.stringify(db, null, 2), 'utf-8');
+  fs.renameSync(tmpPath, DB_PATH);
 }
 
 function sendJson(res, status, body) {
@@ -97,7 +99,8 @@ const server = http.createServer(async (req, res) => {
 
       if (req.method === 'POST' && pathname === '/api/member/enroll') {
         const body = await parseBody(req);
-        const course = db.courses.find((c) => c.id === Number(body.courseId));
+        const courseId = toInt(body.courseId);
+        const course = db.courses.find((c) => c.id === courseId);
         if (!course) return sendJson(res, 404, { error: 'Course not found' });
         course.enrolled = true;
         writeDb(db);
@@ -106,8 +109,11 @@ const server = http.createServer(async (req, res) => {
 
       if (req.method === 'POST' && pathname === '/api/member/tasks') {
         const body = await parseBody(req);
-        if (!body.title || !body.url) return sendJson(res, 400, { error: 'title and url required' });
-        const task = { id: Date.now(), title: body.title, url: body.url, status: 'pending' };
+        const title = normalizeText(body.title, 80);
+        const url = normalizeText(body.url, 500);
+        if (!title || !url) return sendJson(res, 400, { error: 'title and url required' });
+        if (!isValidUrl(url)) return sendJson(res, 422, { error: 'url must be http/https' });
+        const task = { id: newId(), title, url, status: 'pending' };
         db.tasks.unshift(task);
         writeDb(db);
         return sendJson(res, 201, task);
@@ -124,8 +130,8 @@ const server = http.createServer(async (req, res) => {
 
       if (req.method === 'POST' && pathname === '/api/admin/tags') {
         const body = await parseBody(req);
-        const memberId = Number(body.memberId);
-        const tag = String(body.tag || '').trim();
+        const memberId = toInt(body.memberId);
+        const tag = normalizeText(body.tag, 30);
         const member = db.members.find((m) => m.id === memberId);
         if (!member || !tag) return sendJson(res, 400, { error: 'invalid memberId or tag' });
         if (!member.tags.includes(tag)) member.tags.push(tag);
@@ -136,11 +142,11 @@ const server = http.createServer(async (req, res) => {
 
       if (req.method === 'POST' && pathname === '/api/admin/courses') {
         const body = await parseBody(req);
-        const title = String(body.title || '').trim();
-        const time = String(body.time || '').trim();
-        const tag = String(body.tag || '').trim();
+        const title = normalizeText(body.title, 80);
+        const time = normalizeText(body.time, 40);
+        const tag = normalizeText(body.tag, 30);
         if (!title || !time || !tag) return sendJson(res, 400, { error: 'title, time, tag required' });
-        const course = { id: Date.now(), title, time, tag, enrolled: false };
+        const course = { id: newId(), title, time, tag, enrolled: false };
         db.courses.unshift(course);
         writeDb(db);
         return sendJson(res, 201, course);
@@ -148,17 +154,19 @@ const server = http.createServer(async (req, res) => {
 
       if (req.method === 'PATCH' && pathname === '/api/admin/tasks') {
         const body = await parseBody(req);
-        const task = db.tasks.find((t) => t.id === Number(body.id));
+        const taskId = toInt(body.id);
+        const task = db.tasks.find((t) => t.id === taskId);
         if (!task) return sendJson(res, 404, { error: 'Task not found' });
-        if (!['approved', 'rejected'].includes(body.status)) return sendJson(res, 400, { error: 'Invalid status' });
-        task.status = body.status;
+        const status = normalizeText(body.status, 20);
+        if (!['approved', 'rejected'].includes(status)) return sendJson(res, 400, { error: 'Invalid status' });
+        task.status = status;
         writeDb(db);
         return sendJson(res, 200, { ok: true, task });
       }
 
       if (req.method === 'POST' && pathname === '/api/admin/announcements') {
         const body = await parseBody(req);
-        const text = String(body.text || '').trim();
+        const text = normalizeText(body.text, 200);
         if (!text) return sendJson(res, 400, { error: 'text required' });
         db.announcements.unshift(text);
         writeDb(db);
